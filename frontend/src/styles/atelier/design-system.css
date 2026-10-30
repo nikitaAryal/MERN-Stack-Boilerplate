@@ -1,0 +1,116 @@
+
+/* ========================================
+   ATELIER — DESIGN SYSTEM
+   ======================================== */
+
+:root {
+  /* Brand colors */
+  --atelier-ivory: #f8f7f3;
+  --atelier-linen: #f0eee6;
+  --atelier-white: #ffffff;
+  --atelier-sage: #87917a;
+  --atelier-sage-dark: #68745f;
+  --atelier-sage-light: #e9ede5;
+  --atelier-gold: #b59a68;
+
+  /* Text colors */
+  --atelier-charcoal: #30332e;
+  --atelier-muted: #85877f;
+  --atelier-border: #e9e7df;
+
+  /* Status colors */
+  --atelier-success: #71856b;
+  --atelier-warning: #bd9560;
+  --atelier-danger: #b8756e;
+  --atelier-info: #78909c;
+
+  /* Typography */
+  --atelier-heading: Georgia, 'Times New Roman', serif;
+  --atelier-body: 'Inter', 'Segoe UI', sans-serif;
+
+  /* Layout */
+  --atelier-sidebar-width: 250px;
+  --atelier-topbar-height: 76px;
+
+  /* Shape and shadows */
+  --atelier-radius-sm: 8px;
+  --atelier-radius-md: 12px;
+  --atelier-radius-lg: 18px;
+  --atelier-shadow: 0 4px 20px rgba(48, 51, 46, 0.045);
+}
+
+/* Global foundation */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--atelier-ivory) !important;
+  color: var(--atelier-charcoal) !important;
+  font-family: var(--atelier-body) !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Typography */
+
+.atelier-heading {
+  font-family: var(--atelier-heading);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  color: var(--atelier-charcoal);
+}
+
+.atelier-eyebrow {
+  color: var(--atelier-muted);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Shared surfaces */
+
+.atelier-card {
+  background: var(--atelier-white);
+  border: 1px solid var(--atelier-border);
+  border-radius: var(--atelier-radius-lg);
+  box-shadow: var(--atelier-shadow);
+}
+
+.atelier-muted {
+  color: var(--atelier-muted);
+}
+
+/* Responsive foundation */
+
+@media (max-width: 768px) {
+  :root {
+    --atelier-sidebar-width: 0px;
+    --atelier-topbar-height: 64px;
+  }
+}

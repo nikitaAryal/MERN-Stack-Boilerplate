@@ -1,0 +1,386 @@
+/* ========================================
+   ATELIER — DASHBOARD
+   ======================================== */
+
+.atelier-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.atelier-welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.atelier-welcome .atelier-eyebrow {
+  margin-bottom: 8px;
+}
+
+.atelier-welcome h1 {
+  margin: 0;
+  font-size: clamp(32px, 4vw, 43px);
+}
+
+.atelier-welcome-description {
+  margin: 8px 0 0;
+  color: var(--atelier-muted);
+  font-size: 13px;
+}
+
+.atelier-primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 43px;
+  padding: 0 18px;
+  border: 1px solid var(--atelier-sage-dark);
+  border-radius: var(--atelier-radius-sm);
+  background: var(--atelier-sage-dark);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.atelier-primary-button:hover {
+  background: #596650;
+}
+
+/* Statistics */
+
+.atelier-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.atelier-stat-card {
+  min-width: 0;
+  padding: 21px;
+  border: 1px solid var(--atelier-border);
+  border-radius: var(--atelier-radius-lg);
+  background: var(--atelier-white);
+  box-shadow: var(--atelier-shadow);
+}
+
+.atelier-stat-top,
+.atelier-stat-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.atelier-stat-top > span {
+  color: var(--atelier-muted);
+  font-size: 11px;
+}
+
+.atelier-stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--atelier-sage-light);
+  color: var(--atelier-sage-dark);
+  font-size: 13px;
+}
+
+.atelier-stat-card h2 {
+  margin: 20px 0 13px;
+  color: var(--atelier-charcoal);
+  font-family: var(--atelier-heading);
+  font-size: clamp(23px, 2.5vw, 30px);
+  font-weight: 400;
+  letter-spacing: -1px;
+  overflow-wrap: anywhere;
+}
+
+.atelier-stat-bottom {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  color: var(--atelier-muted);
+  font-size: 10px;
+}
+
+.atelier-stat-change {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--atelier-success);
+  font-weight: 600;
+}
+
+/* Dashboard panels */
+
+.atelier-dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(260px, 0.85fr);
+  align-items: start;
+  gap: 18px;
+}
+
+.atelier-panel {
+  min-width: 0;
+  padding: 23px;
+  border: 1px solid var(--atelier-border);
+  border-radius: var(--atelier-radius-lg);
+  background: var(--atelier-white);
+  box-shadow: var(--atelier-shadow);
+}
+
+.atelier-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.atelier-panel-header .atelier-eyebrow {
+  margin-bottom: 5px;
+}
+
+.atelier-panel-title {
+  margin: 0;
+  color: var(--atelier-charcoal);
+  font-family: var(--atelier-heading);
+  font-size: 23px;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+}
+
+.atelier-text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 7px 0;
+  border: 0;
+  background: transparent;
+  color: var(--atelier-sage-dark);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Recent orders table */
+
+.atelier-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.atelier-orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.atelier-orders-table th {
+  padding: 12px 12px;
+  border-bottom: 1px solid var(--atelier-border);
+  color: var(--atelier-muted);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-align: left;
+}
+
+.atelier-orders-table td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #f0efe9;
+  color: #60635b;
+  font-size: 11px;
+}
+
+.atelier-orders-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.atelier-orders-table th:first-child,
+.atelier-orders-table td:first-child {
+  padding-left: 0;
+}
+
+.atelier-orders-table td small {
+  display: block;
+  margin-top: 4px;
+  color: #a09f95;
+  font-size: 9px;
+}
+
+.atelier-order-id {
+  color: var(--atelier-charcoal);
+  font-weight: 600;
+}
+
+.atelier-order-amount {
+  color: var(--atelier-charcoal) !important;
+  font-weight: 600;
+}
+
+.atelier-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.atelier-status-in-production {
+  background: #f4eddf;
+  color: #997744;
+}
+
+.atelier-status-pending {
+  background: #f3ece9;
+  color: #a57668;
+}
+
+.atelier-status-completed {
+  background: #eaf0e7;
+  color: #6c8064;
+}
+
+/* Overview panel */
+
+.atelier-activity-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.atelier-overview-item {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px 0;
+  border-bottom: 1px solid #f0efe9;
+}
+
+.atelier-overview-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  font-size: 13px;
+}
+
+.atelier-overview-icon.sage {
+  background: #e9ede5;
+  color: #718066;
+}
+
+.atelier-overview-icon.gold {
+  background: #f4efe4;
+  color: #a68b5c;
+}
+
+.atelier-overview-icon.green {
+  background: #e9f0e9;
+  color: #718c75;
+}
+
+.atelier-overview-item strong,
+.atelier-overview-item span {
+  display: block;
+}
+
+.atelier-overview-item strong {
+  color: var(--atelier-charcoal);
+  font-family: var(--atelier-heading);
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.atelier-overview-item span {
+  margin-top: 2px;
+  color: var(--atelier-muted);
+  font-size: 10px;
+}
+
+.atelier-dashboard-note {
+  display: flex;
+  gap: 11px;
+  margin-top: 20px;
+  padding: 14px;
+  border-radius: var(--atelier-radius-md);
+  background: #f5f4ee;
+}
+
+.atelier-note-mark {
+  color: var(--atelier-gold);
+  font-size: 19px;
+}
+
+.atelier-dashboard-note strong {
+  color: var(--atelier-charcoal);
+  font-size: 11px;
+}
+
+.atelier-dashboard-note p {
+  margin: 5px 0 0;
+  color: var(--atelier-muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.atelier-demo-note {
+  margin: -12px 0 0;
+  color: #a5a398;
+  font-size: 10px;
+  text-align: right;
+}
+
+/* Responsive dashboard */
+
+@media (max-width: 1100px) {
+  .atelier-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .atelier-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .atelier-welcome {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .atelier-welcome h1 {
+    font-size: 34px;
+  }
+
+  .atelier-stats-grid {
+    gap: 10px;
+  }
+
+  .atelier-stat-card {
+    padding: 15px;
+  }
+
+  .atelier-stat-card h2 {
+    font-size: 23px;
+  }
+
+  .atelier-panel {
+    padding: 17px;
+  }
+
+  .atelier-panel-title {
+    font-size: 21px;
+  }
+}
