@@ -5,6 +5,7 @@ import { Layout } from './components'
 
 import AtelierLayout from './components/atelier/AtelierLayout'
 import Dashboard from './screens/atelier/Dashboard'
+import Orders from './screens/atelier/Orders'
 
 import ForgotPassword from './screens/auth/ForgotPassword'
 
@@ -44,6 +45,15 @@ const App = () => {
           element={
             <AtelierLayout>
               <Dashboard />
+            </AtelierLayout>
+          }
+        />
+
+        <Route
+          path='/orders'
+          element={
+            <AtelierLayout>
+              <Orders />
             </AtelierLayout>
           }
         />
