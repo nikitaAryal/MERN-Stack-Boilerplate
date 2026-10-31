@@ -1,5 +1,7 @@
+
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
-  FaArrowUp,
   FaArrowRight,
   FaPlus,
   FaClock,
@@ -8,91 +10,124 @@ import {
   FaWallet,
   FaUsers,
 } from 'react-icons/fa'
+import dynamicAPI from '../../api/dynamicAPI'
 import './dashboard.css'
 
-const stats = [
-  {
-    title: 'Total Orders',
-    value: '128',
-    change: '+12.8%',
-    description: 'Compared to last month',
-    icon: FaShoppingBag,
-  },
-  {
-    title: 'Pending Orders',
-    value: '18',
-    change: 'Needs attention',
-    description: 'Currently in progress',
-    icon: FaClock,
-  },
-  {
-    title: 'Total Customers',
-    value: '86',
-    change: '+8.4%',
-    description: 'Compared to last month',
-    icon: FaUsers,
-  },
-  {
-    title: 'Total Revenue',
-    value: 'Rs. 2,45,800',
-    change: '+16.2%',
-    description: 'Compared to last month',
-    icon: FaWallet,
-  },
-]
+const formatCurrency = (amount) =>
+  `Rs. ${Number(amount || 0).toLocaleString('en-IN')}`
 
-const recentOrders = [
-  {
-    id: 'AT-1028',
-    customer: 'Ananya Sharma',
-    product: 'Custom bridal outfit',
-    date: '28 Oct 2026',
-    amount: 'Rs. 18,500',
-    status: 'In Production',
-  },
-  {
-    id: 'AT-1027',
-    customer: 'Priya Thapa',
-    product: 'Handcrafted evening dress',
-    date: '27 Oct 2026',
-    amount: 'Rs. 12,000',
-    status: 'Pending',
-  },
-  {
-    id: 'AT-1026',
-    customer: 'Sana Khadka',
-    product: 'Embroidered kurta set',
-    date: '26 Oct 2026',
-    amount: 'Rs. 8,500',
-    status: 'Completed',
-  },
-  {
-    id: 'AT-1025',
-    customer: 'Mira Joshi',
-    product: 'Custom occasion wear',
-    date: '25 Oct 2026',
-    amount: 'Rs. 15,000',
-    status: 'In Production',
-  },
-]
+const formatDate = (date) => {
+  if (!date) return '—'
+
+  return new Date(date).toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  })
+}
+
+const getGreeting = () => {
+  const hour = new Date().getHours()
+
+  if (hour < 12) return 'Good morning.'
+  if (hour < 17) return 'Good afternoon.'
+  return 'Good evening.'
+}
 
 const Dashboard = () => {
+  const navigate = useNavigate()
+
+  const [summary, setSummary] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const response = await dynamicAPI(
+          'get',
+          '/api/orders/dashboard-summary'
+        )
+
+        setSummary(response.data)
+      } catch (err) {
+        setError(
+          typeof err === 'string'
+            ? err
+            : err.message || 'Unable to load dashboard data.'
+        )
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchDashboard()
+  }, [])
+
+  const stats = [
+    {
+      title: 'Total Orders',
+      value: summary?.totalOrders ?? 0,
+      description: 'All recorded orders',
+      icon: FaShoppingBag,
+    },
+    {
+      title: 'Pending Orders',
+      value: summary?.pendingOrders ?? 0,
+      description: 'Awaiting action',
+      icon: FaClock,
+    },
+    {
+      title: 'Total Customers',
+      value: summary?.totalCustomers ?? 0,
+      description: 'Unique customers',
+      icon: FaUsers,
+    },
+    {
+      title: 'Total Revenue',
+      value: formatCurrency(summary?.totalRevenue),
+      description: 'From active orders',
+      icon: FaWallet,
+    },
+  ]
+
+  const recentOrders = summary?.recentOrders || []
+
   return (
     <div className='atelier-dashboard'>
       <section className='atelier-welcome'>
         <div>
-          <p className='atelier-eyebrow'>FRIDAY, 30 OCTOBER 2026</p>
-          <h1 className='atelier-heading'>Good evening.</h1>
+          <p className='atelier-eyebrow'>
+            {new Date().toLocaleDateString('en-GB', {
+              weekday: 'long',
+              day: '2-digit',
+              month: 'long',
+              year: 'numeric',
+            }).toUpperCase()}
+          </p>
+
+          <h1 className='atelier-heading'>{getGreeting()}</h1>
+
           <p className='atelier-welcome-description'>
             Here&apos;s what&apos;s happening with your business today.
           </p>
         </div>
 
-        <button type='button' className='atelier-primary-button'>
+        <button
+          type='button'
+          className='atelier-primary-button'
+          onClick={() => navigate('/orders/create')}
+        >
           <FaPlus />
           Create new order
         </button>
       </section>
+
+      {error && (
+        <p role='alert' style={{ color: '#a57668', fontSize: '13px' }}>
+          {error}
+        </p>
+      )}
 
       <section className='atelier-stats-grid'>
         {stats.map((stat) => {
@@ -107,12 +142,11 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <h2>{stat.value}</h2>
+              <h2>{loading ? '—' : stat.value}</h2>
 
               <div className='atelier-stat-bottom'>
                 <span className='atelier-stat-change'>
-                  {stat.change.startsWith('+') && <FaArrowUp />}
-                  {stat.change}
+                  {loading ? 'Loading...' : 'Live data'}
                 </span>
                 <span>{stat.description}</span>
               </div>
@@ -129,7 +163,11 @@ const Dashboard = () => {
               <h2 className='atelier-panel-title'>Recent orders</h2>
             </div>
 
-            <button type='button' className='atelier-text-button'>
+            <button
+              type='button'
+              className='atelier-text-button'
+              onClick={() => navigate('/orders')}
+            >
               View all <FaArrowRight />
             </button>
           </div>
@@ -147,26 +185,48 @@ const Dashboard = () => {
               </thead>
 
               <tbody>
-                {recentOrders.map((order) => (
-                  <tr key={order.id}>
-                    <td>
-                      <span className='atelier-order-id'>{order.id}</span>
-                      <small>{order.date}</small>
-                    </td>
-                    <td>{order.customer}</td>
-                    <td>{order.product}</td>
-                    <td className='atelier-order-amount'>{order.amount}</td>
-                    <td>
-                      <span
-                        className={`atelier-status atelier-status-${order.status
-                          .toLowerCase()
-                          .replace(' ', '-')}`}
-                      >
-                        {order.status}
-                      </span>
-                    </td>
+                {loading ? (
+                  <tr>
+                    <td colSpan='5'>Loading recent orders...</td>
                   </tr>
-                ))}
+                ) : error ? (
+                  <tr>
+                    <td colSpan='5'>Unable to load orders.</td>
+                  </tr>
+                ) : recentOrders.length === 0 ? (
+                  <tr>
+                    <td colSpan='5'>No orders yet. Create your first order!</td>
+                  </tr>
+                ) : (
+                  recentOrders.map((order) => (
+                    <tr key={order._id}>
+                      <td>
+                        <span className='atelier-order-id'>
+                          {order.orderNumber}
+                        </span>
+                        <small>{formatDate(order.orderDate)}</small>
+                      </td>
+
+                      <td>{order.customer}</td>
+
+                      <td>{order.title}</td>
+
+                      <td className='atelier-order-amount'>
+                        {formatCurrency(order.totalAmount)}
+                      </td>
+
+                      <td>
+                        <span
+                          className={`atelier-status atelier-status-${order.status
+                            .toLowerCase()
+                            .replace(/\s+/g, '-')}`}
+                        >
+                          {order.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -185,8 +245,10 @@ const Dashboard = () => {
               <FaClock />
             </div>
             <div>
-              <strong>18</strong>
-              <span>Orders in progress</span>
+              <strong>
+                {loading ? '—' : summary?.inProductionOrders ?? 0}
+              </strong>
+              <span>Orders in production</span>
             </div>
           </div>
 
@@ -195,7 +257,11 @@ const Dashboard = () => {
               <FaWallet />
             </div>
             <div>
-              <strong>Rs. 42,500</strong>
+              <strong>
+                {loading
+                  ? '—'
+                  : formatCurrency(summary?.outstandingPayments)}
+              </strong>
               <span>Payments outstanding</span>
             </div>
           </div>
@@ -205,7 +271,9 @@ const Dashboard = () => {
               <FaCheckCircle />
             </div>
             <div>
-              <strong>12</strong>
+              <strong>
+                {loading ? '—' : summary?.completedThisMonth ?? 0}
+              </strong>
               <span>Orders completed this month</span>
             </div>
           </div>
@@ -214,14 +282,17 @@ const Dashboard = () => {
             <span className='atelier-note-mark'>✳</span>
             <div>
               <strong>A little reminder</strong>
-              <p>Keep your order updates current so every customer stays informed.</p>
+              <p>
+                Keep your order updates current so every customer stays
+                informed.
+              </p>
             </div>
           </div>
         </aside>
       </section>
 
       <p className='atelier-demo-note'>
-        Dashboard preview · Sample data for design purposes
+        {loading ? 'Loading dashboard...' : 'Dashboard · Live database data'}
       </p>
     </div>
   )

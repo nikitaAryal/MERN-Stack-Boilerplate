@@ -6,6 +6,7 @@ import { Layout } from './components'
 import AtelierLayout from './components/atelier/AtelierLayout'
 import Dashboard from './screens/atelier/Dashboard'
 import Orders from './screens/atelier/Orders'
+import CreateOrder from './screens/atelier/CreateOrder/CreateOrder'
 
 import ForgotPassword from './screens/auth/ForgotPassword'
 
@@ -58,6 +59,15 @@ const App = () => {
           }
         />
 
+        <Route
+          path='/orders/create'
+          element={
+            <AtelierLayout>
+              <CreateOrder />
+            </AtelierLayout>
+          }
+        />
+        
         {/* Existing account and administration screens */}
         <Route
           path='/account/profile'

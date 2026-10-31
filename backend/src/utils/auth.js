@@ -32,12 +32,17 @@ export const isAuth = async (req, res, next) => {
       let { url, method } = req
 
       const urlArray = url.split('/')
-      const lastIndex = urlArray.pop()
+const lastIndex = urlArray.pop()
 
-      if (lastIndex.length > 18 && !lastIndex.includes('q')) {
-        const paramsKey = Object.keys(req.params)
-        url = urlArray.join('/') + '/' + `:${paramsKey[0]}`
-      }
+if (lastIndex.length > 18 && !lastIndex.includes('q')) {
+  const paramsKey = Object.keys(req.params)
+
+  if (paramsKey.length > 0) {
+    url = urlArray.join('/') + '/:' + paramsKey[0]
+  } else {
+    url = urlArray.join('/') + '/:id'
+  }
+}
 
       if (url.includes('page')) {
         url = url.split('page')[0]

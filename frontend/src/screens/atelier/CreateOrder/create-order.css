@@ -1,0 +1,325 @@
+
+/* ========================================
+   CREATE ORDER PAGE
+======================================== */
+
+.create-order-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-bottom: 30px;
+}
+
+.create-order-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  width: fit-content;
+  border: none;
+  background: transparent;
+  color: var(--atelier-muted);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 0;
+  transition: color .2s ease;
+}
+
+.create-order-back:hover {
+  color: var(--atelier-sage-dark);
+}
+
+.create-order-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.create-order-heading h1 {
+  font-size: clamp(30px, 4vw, 38px);
+  margin: 9px 0 6px;
+}
+
+.create-order-heading p {
+  color: var(--atelier-muted);
+  font-size: 12px;
+  margin: 0;
+}
+
+.create-order-reference {
+  color: var(--atelier-sage-dark);
+  background: var(--atelier-sage-light);
+  border: 1px solid #dce3d6;
+  border-radius: 20px;
+  padding: 8px 13px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+
+/* ========================================
+   FORM SECTIONS
+======================================== */
+
+.create-order-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.create-order-section {
+  background: var(--atelier-white);
+  border: 1px solid var(--atelier-border);
+  border-radius: var(--atelier-radius-lg);
+  padding: 26px;
+  box-shadow: var(--atelier-shadow);
+}
+
+.create-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding-bottom: 21px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--atelier-border);
+}
+
+.create-section-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--atelier-sage-light);
+  color: var(--atelier-sage-dark);
+  font-size: 14px;
+}
+
+.create-section-heading h2 {
+  color: var(--atelier-charcoal);
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 5px;
+}
+
+.create-section-heading p {
+  color: var(--atelier-muted);
+  font-size: 10px;
+  margin: 0;
+}
+
+/* ========================================
+   FORM GRID & INPUTS
+======================================== */
+
+.create-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.create-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.create-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.create-field label {
+  color: var(--atelier-charcoal);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.create-field input,
+.create-field select,
+.create-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--atelier-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--atelier-charcoal);
+  padding: 12px 13px;
+  font-family: inherit;
+  font-size: 11px;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.create-field input::placeholder,
+.create-field textarea::placeholder {
+  color: #aaa99f;
+}
+
+.create-field input:focus,
+.create-field select:focus,
+.create-field textarea:focus {
+  border-color: var(--atelier-sage-dark);
+  box-shadow: 0 0 0 3px rgba(113, 128, 103, .10);
+}
+
+.create-field textarea {
+  resize: vertical;
+  min-height: 85px;
+  line-height: 1.7;
+}
+
+.create-field select {
+  cursor: pointer;
+}
+
+.create-error {
+  color: #bd6860;
+  font-size: 10px;
+}
+
+/* ========================================
+   PAYMENT SUMMARY
+======================================== */
+
+.create-payment-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+  margin-top: 25px;
+  padding: 19px;
+  background: #faf9f5;
+  border: 1px solid var(--atelier-border);
+  border-radius: 10px;
+}
+
+.create-payment-summary > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.create-payment-summary span {
+  color: var(--atelier-muted);
+  font-size: 10px;
+}
+
+.create-payment-summary strong {
+  color: var(--atelier-charcoal);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.create-payment-summary .balance-row strong {
+  color: var(--atelier-sage-dark);
+}
+
+/* ========================================
+   FORM ACTIONS
+======================================== */
+
+.create-order-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 0;
+}
+
+.create-order-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 12px 19px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all .2s ease;
+}
+
+.create-draft-button {
+  background: var(--atelier-white);
+  color: var(--atelier-charcoal);
+  border: 1px solid var(--atelier-border);
+}
+
+.create-draft-button:hover {
+  background: var(--atelier-ivory);
+}
+
+.create-submit-button {
+  background: var(--atelier-sage-dark);
+  color: white;
+  border: 1px solid var(--atelier-sage-dark);
+}
+
+.create-submit-button:hover {
+  background: var(--atelier-charcoal);
+  border-color: var(--atelier-charcoal);
+  transform: translateY(-1px);
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 700px) {
+  .create-order-page {
+    gap: 19px;
+  }
+
+  .create-order-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .create-order-section {
+    padding: 19px;
+  }
+
+  .create-form-grid {
+    grid-template-columns: 1fr;
+    gap: 17px;
+  }
+
+  .create-field.full-width {
+    grid-column: auto;
+  }
+
+  .create-payment-summary {
+    grid-template-columns: 1fr;
+    gap: 17px;
+    padding: 17px;
+  }
+
+  .create-payment-summary > div {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .create-payment-summary strong {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 450px) {
+  .create-order-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .create-order-actions button {
+    width: 100%;
+  }
+
+  .create-order-reference {
+    align-self: flex-start;
+  }
+}

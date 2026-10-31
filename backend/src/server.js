@@ -9,6 +9,7 @@ import { notFound, errorHandler } from './api/middlewares/error.js'
 import db from './config/db.js'
 import authRoute from '../src/api/routers/auth.js'
 import uploadRoute from '../src/api/routers/upload.js'
+import ordersRoute from '../src/api/routers/orders.js'
 
 db()
 
@@ -24,6 +25,7 @@ app.use(express.json())
 
 app.use('/', uploadRoute)
 app.use('/', authRoute)
+app.use('/', ordersRoute)
 
 const __dirname = path.resolve()
 app.use('./api/uploads', express.static(path.join(__dirname, '/uploads')))
