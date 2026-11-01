@@ -8,6 +8,7 @@ export const generateToken = (id) => {
   })
 }
 
+
 export const isAuth = async (req, res, next) => {
   let token
 
@@ -17,8 +18,15 @@ export const isAuth = async (req, res, next) => {
   ) {
     try {
       token = req.headers.authorization.split(' ')[1]
+
       const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
       req.user = await User.findById(decoded.id).select('-password')
+
+      if (!req.user) {
+        return res.status(401).json({ error: 'User not found' })
+      }
+
       const userRole = await UserRole.findOne(
         { user: req.user._id },
         { role: 1 }
@@ -29,57 +37,72 @@ export const isAuth = async (req, res, next) => {
         },
       })
 
-      let { url, method } = req
+      if (!userRole?.role) {
+        return res.status(403).json({
+          error: 'No role assigned to this user',
+        })
+      }
 
-      const urlArray = url.split('/')
-const lastIndex = urlArray.pop()
+      const permissions = userRole.role.permission || []
 
-if (lastIndex.length > 18 && !lastIndex.includes('q')) {
-  const paramsKey = Object.keys(req.params)
+      // Remove query parameters from the requested URL.
+      let url = req.path
+      const method = req.method
 
-  if (paramsKey.length > 0) {
-    url = urlArray.join('/') + '/:' + paramsKey[0]
-  } else {
-    url = urlArray.join('/') + '/:id'
-  }
-}
+      // Replace dynamic MongoDB IDs with route parameters.
+      const urlSegments = url.split('/')
 
+      const normalizedSegments = urlSegments.map((segment) => {
+        if (/^[a-fA-F0-9]{24}$/.test(segment)) {
+          return ':id'
+        }
+
+        return segment
+      })
+
+      url = normalizedSegments.join('/')
+
+      // Match the existing pagination route convention.
       if (url.includes('page')) {
         url = url.split('page')[0]
-
-        if (url.includes('?')) {
-          url = url.split('?')[0]
-        }
       }
-      if (
-        userRole.role.permission.find(
-          (permission) =>
-            permission.route === url &&
-            permission.method === method &&
-            permission.auth === false
-        )
-      ) {
+
+      const publicPermission = permissions.find(
+        (permission) =>
+          permission.route === url &&
+          permission.method === method &&
+          permission.auth === false
+      )
+
+      if (publicPermission) {
         return next()
       }
-      if (
-        !userRole.role.permission.find(
-          (permission) =>
-            permission.route === url &&
-            permission.method === method &&
-            permission.auth === true
-        )
-      ) {
-        return res
-          .status(403)
-          .send({ error: 'You do not have permission to access this route' })
+
+      const allowedPermission = permissions.find(
+        (permission) =>
+          permission.route === url &&
+          permission.method === method &&
+          permission.auth === true
+      )
+
+      if (!allowedPermission) {
+        return res.status(403).json({
+          error: 'You do not have permission to access this route',
+        })
       }
 
-      next()
+      return next()
     } catch (error) {
-      res.status(401).json({ error: 'Unauthorized' })
+      console.error('Authentication error:', error)
+
+      return res.status(401).json({
+        error: 'Unauthorized',
+      })
     }
   }
-  if (!token) {
-    res.status(401).json({ error: 'Not authorized, no token provided' })
-  }
+
+  return res.status(401).json({
+    error: 'Not authorized, no token provided',
+  })
 }
+

@@ -1,4 +1,4 @@
-
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import dynamicAPI from '../../../api/dynamicAPI'
 import {
@@ -10,7 +10,6 @@ import {
   FaCalendarAlt,
   FaWallet,
 } from 'react-icons/fa'
-import { useNavigate } from 'react-router-dom'
 import './create-order.css'
 
 const initialForm = {
@@ -31,7 +30,16 @@ const initialForm = {
 
 const CreateOrder = () => {
   const navigate = useNavigate()
-  const [form, setForm] = useState(initialForm)
+const location = useLocation()
+
+const selectedCustomer = location.state?.customer
+
+const [form, setForm] = useState(() => ({
+  ...initialForm,
+  customer: selectedCustomer?.name || '',
+  email: selectedCustomer?.email || '',
+  phone: selectedCustomer?.phone || '',
+}))
   const [errors, setErrors] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 const [submitError, setSubmitError] = useState('')

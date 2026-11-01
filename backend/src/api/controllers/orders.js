@@ -416,6 +416,43 @@ export const deleteOrder = async (req, res) => {
 // GET ALL CUSTOMERS
 export const getCustomers = async (req, res) => {
   try {
+        // Backfill customers from existing orders.
+    const existingCustomers = await Order.aggregate([
+      {
+        $match: {
+          createdBy: req.user._id,
+          phone: { $exists: true, $ne: '' },
+        },
+      },
+      { $sort: { updatedAt: -1 } },
+      {
+        $group: {
+          _id: '$phone',
+          name: { $first: '$customer' },
+          email: { $first: '$email' },
+        },
+      },
+    ])
+
+    if (existingCustomers.length) {
+      await Customer.bulkWrite(
+        existingCustomers.map((item) => ({
+          updateOne: {
+            filter: {
+              createdBy: req.user._id,
+              phone: item._id,
+            },
+            update: {
+              $setOnInsert: {
+                name: item.name,
+                email: item.email || '',
+              },
+            },
+            upsert: true,
+          },
+        }))
+      )
+    }
     const page = Math.max(1, parseInt(req.query.page) || 1)
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 10))
     const skip = (page - 1) * limit

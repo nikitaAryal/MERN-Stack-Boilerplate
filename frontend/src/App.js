@@ -9,6 +9,8 @@ import Orders from './screens/atelier/Orders'
 import CreateOrder from './screens/atelier/CreateOrder/CreateOrder'
 import OrderDetails from './screens/atelier/OrderDetails/OrderDetails'
 import EditOrder from './screens/atelier/EditOrder/EditOrder'
+import Customers from './screens/atelier/Customers'
+import CustomerProfile from './screens/atelier/CustomerProfile/CustomerProfile'
 
 import ForgotPassword from './screens/auth/ForgotPassword'
 
@@ -87,7 +89,24 @@ const App = () => {
             </AtelierLayout>
           }
         />
-        
+
+        <Route
+  path='/customers'
+  element={
+    <AtelierLayout>
+      <Customers />
+    </AtelierLayout>
+  }
+/>
+
+<Route
+  path='/customers/:id'
+  element={
+    <AtelierLayout>
+      <CustomerProfile />
+    </AtelierLayout>
+  }
+/>
         {/* Existing account and administration screens */}
         <Route
           path='/account/profile'
