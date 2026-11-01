@@ -8,6 +8,8 @@ import {
   getOrderById,
   updateOrder,
   deleteOrder,
+  getCustomers,
+  getCustomerById,
 } from '../controllers/orders.js'
 
 const router = express.Router()
@@ -21,7 +23,7 @@ router
 router
   .route('/api/orders/dashboard-summary')
   .get(isAuth, getDashboardSummary)
-  
+
 // Individual order operations
 router
   .route('/api/orders/:id')
@@ -29,4 +31,12 @@ router
   .put(isAuth, updateOrder)
   .delete(isAuth, deleteOrder)
 
+router
+  .route('/api/customers')
+  .get(isAuth, getCustomers)
+
+router
+  .route('/api/customers/:id')
+  .get(isAuth, getCustomerById)
+  
 export default router

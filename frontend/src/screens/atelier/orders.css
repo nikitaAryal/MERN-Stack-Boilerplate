@@ -457,3 +457,19 @@
     flex-direction: column;
   }
 }
+
+.orders-id-button {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+
+.orders-id-button:hover {
+  color: var(--atelier-sage-dark);
+}

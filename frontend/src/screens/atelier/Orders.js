@@ -246,7 +246,14 @@ const Orders = () => {
                 filteredOrders.map((order) => (
                   <tr key={order._id}>
                     <td>
-                      <span className='orders-id'>{order.orderNumber}</span>
+                      <button
+                        type='button'
+                        className='orders-id orders-id-button'
+                        onClick={() => navigate(`/orders/${order._id}`)}
+                      >
+                        {order.orderNumber}
+                      </button>
+
                       <span className='orders-item-name'>{order.title}</span>
                     </td>
 
@@ -284,11 +291,7 @@ const Orders = () => {
                         type='button'
                         className='orders-more-button'
                         aria-label={`More actions for ${order.orderNumber}`}
-                        onClick={() =>
-                          window.alert(
-                            `Order details for ${order.orderNumber} will be added soon.`
-                          )
-                        }
+                        onClick={() => navigate(`/orders/${order._id}`)}
                       >
                         <FaEllipsisH />
                       </button>

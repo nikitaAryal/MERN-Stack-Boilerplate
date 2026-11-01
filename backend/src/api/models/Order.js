@@ -14,6 +14,11 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
+    customerId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'Customer',
+  default: null,
+},
     // Customer information
     customer: {
       type: String,

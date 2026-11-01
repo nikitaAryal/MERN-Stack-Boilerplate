@@ -1,0 +1,48 @@
+.edit-order-page {
+  padding-bottom: 50px;
+}
+
+.edit-order-state {
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+  color: #536357;
+}
+
+.edit-order-state h2 {
+  color: #293d30;
+  margin: 0;
+}
+
+.edit-order-state p {
+  margin: 0 0 12px;
+  color: #78857b;
+}
+
+.edit-order-loader {
+  width: 34px;
+  height: 34px;
+  border: 3px solid #dce5dc;
+  border-top-color: #718b72;
+  border-radius: 50%;
+  animation: edit-order-spin 0.8s linear infinite;
+}
+
+@keyframes edit-order-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.edit-order-error {
+  padding: 14px 16px;
+  border: 1px solid #edcaca;
+  border-radius: 10px;
+  background: #fff5f3;
+  color: #a3443d;
+  font-size: 14px;
+}

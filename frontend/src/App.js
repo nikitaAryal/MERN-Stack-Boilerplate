@@ -7,6 +7,8 @@ import AtelierLayout from './components/atelier/AtelierLayout'
 import Dashboard from './screens/atelier/Dashboard'
 import Orders from './screens/atelier/Orders'
 import CreateOrder from './screens/atelier/CreateOrder/CreateOrder'
+import OrderDetails from './screens/atelier/OrderDetails/OrderDetails'
+import EditOrder from './screens/atelier/EditOrder/EditOrder'
 
 import ForgotPassword from './screens/auth/ForgotPassword'
 
@@ -64,6 +66,24 @@ const App = () => {
           element={
             <AtelierLayout>
               <CreateOrder />
+            </AtelierLayout>
+          }
+        />
+
+        <Route
+          path='/orders/:id'
+          element={
+            <AtelierLayout>
+              <OrderDetails />
+            </AtelierLayout>
+          }
+        />
+
+        <Route
+          path='/orders/:id/edit'
+          element={
+            <AtelierLayout>
+              <EditOrder />
             </AtelierLayout>
           }
         />

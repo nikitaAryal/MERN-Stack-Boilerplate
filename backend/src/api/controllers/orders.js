@@ -1,4 +1,4 @@
-
+import Customer from '../models/Customer.js'
 import mongoose from 'mongoose'
 import Order from '../models/Order.js'
 
@@ -67,12 +67,33 @@ export const createOrder = async (req, res) => {
       })
     }
 
+        // Find an existing customer by phone or create a new one.
+    const customerRecord = await Customer.findOneAndUpdate(
+      {
+        createdBy: req.user._id,
+        phone: phone.trim(),
+      },
+      {
+        $set: {
+          name: customer.trim(),
+          email: email?.trim().toLowerCase() || '',
+        },
+      },
+      {
+        new: true,
+        upsert: true,
+        setDefaultsOnInsert: true,
+        runValidators: true,
+      }
+    )
+
     const order = await Order.create({
       orderNumber: generateOrderNumber(),
       createdBy: req.user._id,
+      customerId: customerRecord._id,
 
       customer: customer.trim(),
-      email,
+      email: email?.trim().toLowerCase() || '',
       phone: phone.trim(),
 
       title: title.trim(),
@@ -330,6 +351,27 @@ export const updateOrder = async (req, res) => {
       })
     }
 
+        // Keep the linked customer record synchronized.
+    const customerRecord = await Customer.findOneAndUpdate(
+      {
+        createdBy: req.user._id,
+        phone: order.phone.trim(),
+      },
+      {
+        $set: {
+          name: order.customer.trim(),
+          email: order.email?.trim().toLowerCase() || '',
+        },
+      },
+      {
+        new: true,
+        upsert: true,
+        setDefaultsOnInsert: true,
+        runValidators: true,
+      }
+    )
+
+    order.customerId = customerRecord._id
     order.balance = total - advance
 
     await order.save()
@@ -363,6 +405,144 @@ export const deleteOrder = async (req, res) => {
 
     return res.status(200).json({
       message: 'Order deleted successfully.',
+    })
+  } catch (error) {
+    return res.status(500).json({
+      error: error.message,
+    })
+  }
+}
+
+// GET ALL CUSTOMERS
+export const getCustomers = async (req, res) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page) || 1)
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 10))
+    const skip = (page - 1) * limit
+
+    const filter = {
+      createdBy: req.user._id,
+    }
+
+    const search = req.query.search?.trim()
+
+    if (search) {
+      const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+      filter.$or = [
+        { name: { $regex: safeSearch, $options: 'i' } },
+        { phone: { $regex: safeSearch, $options: 'i' } },
+        { email: { $regex: safeSearch, $options: 'i' } },
+      ]
+    }
+
+    const [customers, total] = await Promise.all([
+      Customer.find(filter)
+        .sort({ updatedAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+
+      Customer.countDocuments(filter),
+    ])
+
+    const phones = customers.map((customer) => customer.phone)
+
+    const orderStats = phones.length
+      ? await Order.aggregate([
+          {
+            $match: {
+              createdBy: req.user._id,
+              phone: { $in: phones },
+            },
+          },
+          {
+            $group: {
+              _id: '$phone',
+              totalOrders: { $sum: 1 },
+              totalSpending: { $sum: '$totalAmount' },
+              outstandingBalance: { $sum: '$balance' },
+            },
+          },
+        ])
+      : []
+
+    const statsByPhone = new Map(
+      orderStats.map((item) => [item._id, item])
+    )
+
+    const data = customers.map((customer) => {
+      const stats = statsByPhone.get(customer.phone)
+
+      return {
+        ...customer,
+        totalOrders: stats?.totalOrders || 0,
+        totalSpending: stats?.totalSpending || 0,
+        outstandingBalance: stats?.outstandingBalance || 0,
+      }
+    })
+
+    return res.status(200).json({
+      data,
+      page,
+      pages: Math.ceil(total / limit),
+      total,
+    })
+  } catch (error) {
+    return res.status(500).json({
+      error: error.message,
+    })
+  }
+}
+
+// GET CUSTOMER PROFILE AND ORDER HISTORY
+export const getCustomerById = async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        error: 'Invalid customer ID.',
+      })
+    }
+
+    const customer = await Customer.findOne({
+      _id: req.params.id,
+      createdBy: req.user._id,
+    }).lean()
+
+    if (!customer) {
+      return res.status(404).json({
+        error: 'Customer not found.',
+      })
+    }
+
+    // Include older orders that have not yet been linked by customerId.
+    const orders = await Order.find({
+      createdBy: req.user._id,
+      phone: customer.phone,
+    })
+      .sort({ createdAt: -1 })
+      .lean()
+
+    const summary = orders.reduce(
+      (result, order) => {
+        result.totalOrders += 1
+        result.totalSpending += order.totalAmount || 0
+        result.outstandingBalance += order.balance || 0
+        return result
+      },
+      {
+        totalOrders: 0,
+        totalSpending: 0,
+        outstandingBalance: 0,
+      }
+    )
+
+    return res.status(200).json({
+      data: {
+        customer,
+        orders,
+        summary,
+      },
     })
   } catch (error) {
     return res.status(500).json({
